@@ -3,12 +3,15 @@
 class Operation
 {
 	private:
-
+		int height;
+		int width;
+		cv::Mat* opimgptr;
 	public:
 
-	bool rgbtogray(cv::Mat* img, int use_gpu);
+	bool op_rgbtogray(cv::Mat* grayptr, int use_gpu);
 
 	Operation();
+	Operation(cv::Mat* imgptr);
 	~Operation();
 
 };
