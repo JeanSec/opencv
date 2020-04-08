@@ -73,12 +73,13 @@ bool Operation::op_blur(cv::Mat& t_img, cv::Mat& t_blur)
 	delta = 0;
 	ddepth = -1;
 	kernel_size = 5;
-	kernel = 1.0f/159.0f*(Mat_<double>(5, 5) << 2, 4, 5, 4, 2, 
+	/*kernel = 1.0f/159.0f*(Mat_<double>(5, 5) << 2, 4, 5, 4, 2, 
 												4, 9, 12, 9, 4, 
 												5, 12, 15, 12, 5, 
 												4, 9, 12, 9, 4, 
-												2, 4, 5, 4, 2);
+												2, 4, 5, 4, 2);*/
 
+	kernel = 1.0f / 400.0f * (Mat_<double>(20, 20, 1));
 	/// Apply filter
 	filter2D(t_img, img_blur, ddepth, kernel, anchor, delta, BORDER_DEFAULT);
 	t_blur = img_blur;  //a revoir car copie de matrice
@@ -90,7 +91,6 @@ bool Operation::op_stitch(const imagelist& images, cv::Mat& pano)
 {
 	if (images.empty())
 		return false;
-
 	Stitcher::Mode mode = Stitcher::PANORAMA;
 	Ptr<Stitcher> stitcher = Stitcher::create(mode);
 	stitcher->stitch(images, pano);
