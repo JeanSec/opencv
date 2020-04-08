@@ -19,5 +19,5 @@ class Operation
 	Operation();
 	Operation(cv::Mat& t_img);
 	~Operation();
-	bool op_stitch(imagelist images, imagelist pano);
+	bool op_stitch(const imagelist& images, cv::Mat& pano);
 };

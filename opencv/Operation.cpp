@@ -86,15 +86,16 @@ bool Operation::op_blur(cv::Mat& t_img, cv::Mat& t_blur)
 	return true;
 }
 
-bool Operation::op_stitch(imagelist images, imagelist pano)
+bool Operation::op_stitch(const imagelist& images, cv::Mat& pano)
 {
-	//std::vector<imagelist> output_pano;
-	//std::vector<imagelist> output_stitch;
+	if (images.empty())
+		return false;
 
-	//cv::Stitcher::composePanorama(images, pano);
-	cv::Stitcher st;
-	st.stitch(images, pano);
-
+	Stitcher::Mode mode = Stitcher::PANORAMA;
+	Ptr<Stitcher> stitcher = Stitcher::create(mode);
+	stitcher->stitch(images, pano);
+	if (pano.empty())
+		return false;
 	return true;
 }
 
