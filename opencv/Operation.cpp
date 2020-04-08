@@ -8,63 +8,63 @@ using namespace cv;
 
 Operation::Operation() 
 {
-	height = 0;
-	width = 0;
-	opimg = NULL;
-	opimg_src = NULL;
+	m_height = 0;
+	m_width = 0;
+	m_img = NULL;
+	m_img_src = NULL;
 }
 
-Operation::Operation(cv::Mat& img) 
+Operation::Operation(cv::Mat& t_img) 
 {
-	opimg_src = img;
-	height = img.rows;
-	width = img.cols;
-	opimg = cv::Mat(height, width, CV_8UC1, Scalar(0, 0, 0));
+	m_img_src = t_img;
+	m_height = t_img.rows;
+	m_width = t_img.cols;
+	m_img = cv::Mat(m_height, m_width, CV_8UC1, Scalar(0, 0, 0));
 }
 
 Operation::~Operation() 
 {
 }
 
-bool Operation::op_get_src_img(cv::Mat& img)
+bool Operation::op_get_src_img(cv::Mat& t_img)
 {
-	img = opimg_src; //copie à revoir ou reference ok ?
+	t_img = m_img_src; //copie à revoir ou reference ok ?
 	return true;
 }
-bool Operation::op_get_current_img(cv::Mat& img)
+bool Operation::op_get_current_img(cv::Mat& t_img)
 {
-	img = opimg;//copie à revoir ou reference ok ?
+	t_img = m_img;//copie à revoir ou reference ok ?
 	return true;
 }
 
-bool Operation::op_add_img_src(cv::Mat& img)
+bool Operation::op_add_img_src(cv::Mat& t_img)
 {
-	opimg_src = img;//copie à revoir ou reference ok ?
+	m_img_src = t_img;//copie à revoir ou reference ok ?
 	return true;
 }
-bool Operation::op_rgbtogray(cv::Mat& img, cv::Mat& gray)
+bool Operation::op_rgbtogray(cv::Mat& t_img, cv::Mat& t_gray)
 {
 	//convert a rgb image to gray
 	//New grayscale image = ( (0.3 * R) + (0.59 * G) + (0.11 * B) )
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < m_height; i++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int j = 0; j < m_width; j++)
 		{
-			Point3_<uchar>* p = img.ptr<Point3_<uchar> >(i, j);
-			opimg.at<uchar>(i, j) = (0.3 * p->z) + (0.59 * p->y) + (0.11 * p->x);
+			Point3_<uchar>* p = t_img.ptr<Point3_<uchar> >(i, j);
+			m_img.at<uchar>(i, j) = (0.3 * p->z) + (0.59 * p->y) + (0.11 * p->x); //utiliser foreach
 			//grayptr->at<uchar>(i, j) = ((p->z) + (p->y) + (p->x))/3;
 		}
 	}
-	gray = opimg; //a revoir car copie de matrice
+	t_gray = m_img; //a revoir car copie de matrice
 	return true;
 }
 
-bool Operation::op_blur(cv::Mat& img, cv::Mat& blur)
+bool Operation::op_blur(cv::Mat& t_img, cv::Mat& t_blur)
 {
 	//blur an image with a convolution(gaussian kernel)
 	/// Declare variables
 	Mat src, dst, kernel;
-	Mat img_blur(height, width, CV_8UC1, Scalar(0, 0, 0));
+	Mat img_blur(m_height, m_width, CV_8UC1, Scalar(0, 0, 0));
 	Point anchor;
 	double delta;
 	int ddepth, kernel_size;
@@ -80,8 +80,21 @@ bool Operation::op_blur(cv::Mat& img, cv::Mat& blur)
 												2, 4, 5, 4, 2);
 
 	/// Apply filter
-	filter2D(img, img_blur, ddepth, kernel, anchor, delta, BORDER_DEFAULT);
-	blur = img_blur;  //a revoir car copie de matrice
-	opimg = img_blur; //a revoir car copie de matrice
+	filter2D(t_img, img_blur, ddepth, kernel, anchor, delta, BORDER_DEFAULT);
+	t_blur = img_blur;  //a revoir car copie de matrice
+	m_img = img_blur; //a revoir car copie de matrice
 	return true;
 }
+
+bool Operation::op_stitch(imagelist images, imagelist pano)
+{
+	//std::vector<imagelist> output_pano;
+	//std::vector<imagelist> output_stitch;
+
+	//cv::Stitcher::composePanorama(images, pano);
+	cv::Stitcher st;
+	st.stitch(images, pano);
+
+	return true;
+}
+

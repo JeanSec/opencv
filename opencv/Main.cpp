@@ -4,11 +4,13 @@
 using namespace std;
 using namespace cv;
 #include <chrono>
+#include <boost/filesystem.hpp>
+using namespace boost::filesystem;
 
 int main()
 {
     auto start = std::chrono::steady_clock::now();
-    Mat current_img,src;
+    Mat current_img,src, test;
     Mat gray,blur;
     Mat img = imread("lena.jpg");
 
@@ -39,6 +41,20 @@ int main()
     //opimage.op_get_img_src(imgptr);
     //imwrite("C:/Dev/opencv/Gray_Image_correct.jpg", *img_gray_ptr);
     
+    imagelist images_input, images_ouput;
+    images_ouput.push_back(test);
+
+    for (directory_iterator itr(p); itr != directory_iterator(); ++itr)
+    {
+        images_input.push_back(cv::imread(itr->path().filename()));
+    }
+ 
+    opimage.op_stitch(images_input, images_ouput);
+
+
+
     waitKey(0);
     return 0;
 }
+
+
