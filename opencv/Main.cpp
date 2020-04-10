@@ -9,7 +9,7 @@ int main()
 {
     Mat current_img,src;
     Mat gray,blur;
-    Mat img = imread("C:/Dev/opencv/opencv/images/lena.jpg");
+    Mat img = imread("images/lena.jpg");
     auto start = std::chrono::steady_clock::now();
     Operation opimage(img);
     
@@ -19,10 +19,16 @@ int main()
     imshow("image gray", gray);
     
     //cvtColor(img, img_gray, cv::COLOR_BGR2GRAY);
-    opimage.op_blur(gray, blur);
+    /*opimage.op_blur(gray, blur);
     namedWindow("image blur", WINDOW_NORMAL);
-    imshow("image blur", blur);
-
+    imshow("image blur", blur);*/
+    Square zone;
+    cv::Point top_left(200, 200);
+    zone.a = top_left;
+    zone.size = 100;
+    opimage.op_blur_zone(gray, blur, zone);
+    namedWindow("image blur zone", WINDOW_NORMAL);
+    imshow("image blur zone", blur); 
 
     opimage.op_get_current_img(current_img);
     opimage.op_get_src_img(src);
@@ -36,9 +42,9 @@ int main()
     
     imagelist images_input;
 
-    images_input.push_back(cv::imread("C:/Dev/opencv/opencv/images/scottsdale/imgA.jpg"));
-    images_input.push_back(cv::imread("C:/Dev/opencv/opencv/images/scottsdale/imgB.jpg"));
-    images_input.push_back(cv::imread("C:/Dev/opencv/opencv/images/scottsdale/imgC.jpg"));
+    images_input.push_back(cv::imread("images/scottsdale/imgA.jpg"));
+    images_input.push_back(cv::imread("images/scottsdale/imgB.jpg"));
+    images_input.push_back(cv::imread("images/scottsdale/imgC.jpg"));
 
     cv::Mat output;
 
@@ -51,9 +57,9 @@ int main()
     namedWindow("image panorama", WINDOW_NORMAL);
     imshow("image panorama", output);
 
-    cv::imwrite("C:/Dev/opencv/opencv/images/output/panorama.jpg", output);
-    cv::imwrite("C:/Dev/opencv/opencv/images/output/blur.jpg", blur);
-    cv::imwrite("C:/Dev/opencv/opencv/images/output/gray.jpg", gray);
+    cv::imwrite("images/output/panorama.jpg", output);
+    cv::imwrite("images/output/blur.jpg", blur);
+    cv::imwrite("images/output/gray.jpg", gray);
     waitKey(0);
     return 0;
 }

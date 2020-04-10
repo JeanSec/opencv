@@ -87,8 +87,25 @@ bool Operation::op_blur(cv::Mat& t_img, cv::Mat& t_blur)
 	return true;
 }
 
+bool Operation::op_blur_zone(cv::Mat& t_img, cv::Mat& t_blur, const Square t_zone)
+{
+	cv::Mat kernel = 1.0f / 400.0f * (Mat_<double>(20, 20, 1));
+
+	for (int i = t_zone.a.y; i < t_zone.a.y + t_zone.size; i++)
+	{
+		for (int j = t_zone.a.x; j < t_zone.a.x + t_zone.size; j++)
+		{
+			Point3_<uchar>* p = t_img.ptr<Point3_<uchar> >(i, j);
+			m_img.at<uchar>(i, j) = 50;
+		}
+	}
+	t_blur = m_img;  
+	return true;
+}
+
 bool Operation::op_stitch(const imagelist& images, cv::Mat& pano)
 {
+	//stitch multiple images together in images to compose a panorama in pano
 	if (images.empty())
 		return false;
 	Stitcher::Mode mode = Stitcher::PANORAMA;
